@@ -182,7 +182,7 @@ deployment 缩容时也分两种情况，第一种，客户端连接的 grpc 后
 
 ![connected-pod8-running](images/connected-pod8-running.png)
 
-第二种情况，缩容后，客户端最开始连接的 grpc 后端被删除，此时我们发现客户端连接到了一个新的 grpc 后端（172.13.0.7 变成了 172.13.0.8）。
+第二种情况，缩容后，客户端最开始连接的 grpc 后端被删除，此时我们发现客户端连接到了一个新的 grpc 后端（172.17.0.7 变成了 172.17.0.8）。
 
 ![connected-endpoint-terminated](images/connected-endpoint-terminated.png)
 
@@ -194,7 +194,7 @@ deployment 缩容时也分两种情况，第一种，客户端连接的 grpc 后
 
 ![demolb-info](images/demolb-info.png)
 
-客户端的流量转发到了 172.13.0.7 这个 pod，此时我们强制删除该 pod，现象和上述直接删除 deployment 中的 pod 现象一致，等待一段时间终端才提示删除 pod 完成，然后客户端提示连接断开。
+客户端的流量转发到了 172.17.0.7 这个 pod，此时我们强制删除该 pod，现象和上述直接删除 deployment 中的 pod 现象一致，等待一段时间终端才提示删除 pod 完成，然后客户端提示连接断开。
 
 ![connection-of-demolb-broken](images/connection-of-demolb-broken.png)
 
@@ -212,7 +212,7 @@ k8s 支持使用 ingress 对 http 请求的各个层做定制化的负载均衡�
 
 ![check-if-multiple-use](images/check-if-multiple-use.png)
 
-如图，四个终端起了四个客户端，四个客户端的流量分别被转发到了 172.13.0.12，172.13.0.11，172.13.0.13，172.13.0.12。
+如图，四个终端起了四个客户端，四个客户端的流量分别被转发到了 172.17.0.12，172.17.0.11，172.17.0.13，172.17.0.12。
 
 ## TODO：借助 etcd 在 client 端做负载均衡
 
