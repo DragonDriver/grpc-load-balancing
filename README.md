@@ -4,7 +4,7 @@
 
 grpc 服务定义如下：
 
-```proto
+```ProtoBuf
 syntax = "proto3";
 
 message HelloRequest {
@@ -194,7 +194,7 @@ deployment 缩容时也分两种情况，第一种，客户端连接的 grpc 后
 
 ![demolb-info](images/demolb-info.png)
 
-客户端的流量转发到了 172.17.0.7 这个 pod，此时我们强制删除该 pod，现象和上述直接删除 deployment 中的 pod 现象一致，等待一段时间终端才提示删除 pod 完成，然后客户端提示连接断开。
+客户端的流量转发到了 172.17.0.11 这个 pod，此时我们强制删除该 pod，现象和上述直接删除 deployment 中的 pod 现象一致，等待一段时间终端才提示删除 pod 完成，然后客户端提示连接断开。
 
 ![connection-of-demolb-broken](images/connection-of-demolb-broken.png)
 
@@ -218,6 +218,8 @@ k8s 支持使用 ingress 对 http 请求的各个层做定制化的负载均衡�
 
 服务在启动之前，需要在 etcd 续租自己的 lease key，key 可以是由节点 mac 生成的唯一字符串（uuid），value 中存储节点的 ip 和 port，这些 lease key 具有同样的前缀，因此客户端可以在 etcd 中 watch 该前缀，该前缀对应 key 的变化对应服务节点的上下线，客户端根据这些变化动态创建以及删除相应节点的连接，在该连接池上再做一个负载均衡的策略，简单点可以随机分配连接，稍微智能点可以做一个优先队列，连接上负载越低的越容易被分配给新任务。
 
+![client-load-balancing](images/client-load-balancing.png)
+
 ### TODO
 
 不过该策略不适合在 k8s 上部署，节点注册的 ip 其实是 k8s 集群的虚拟 ip，只在集群内部才能被访问，显然让用户的客户端和服务在同一个集群是不太现实的。当然，我们也可以对节点的每一个 pod 做 port forward，这样虽然能解决集群外访问的问题，但是显然每一个运维人员都不会想去做这样的事情就是了。不过该方法可以在传统物理机上做验证，如果节点数不多的话。
@@ -226,6 +228,8 @@ k8s 支持使用 ingress 对 http 请求的各个层做定制化的负载均衡�
 
 原理和 client 端做负载均衡类似，client 端的请求首先发到 server，由 server 对该请求做负载均衡，路由到不同的节点。该方案的优点是适合在 k8s 上部署，因为此时 server 以及 服务节点在一个集群上，互相可以访问对方的虚拟 ip，还有一个好处是该方案不需要每一个客户端都实现负载均衡策略。当然，该方案下 server
 容易形成单点瓶颈，而且中间也有一次转发的开销，对负载较重的场景不太友好（比如用户频繁插入，频繁发出结果集较大的请求）。
+
+![server-load-balancing](images/server-load-balancing.png)
 
 ## 其他成熟的解决方案
 
