@@ -188,9 +188,15 @@ deployment 缩容时也分两种情况，第一种，客户端连接的 grpc 后
 
 ![connect-pod7-terminated](images/connect-pod7-terminated.png)
 
-### TODO: 不使用 deployment，使用 service 直接管理 pod
+### 不使用 deployment，使用 service 直接管理 pod
 
-service 根据 pod 的 label 进行选择，此时删除客户端选中的 pod，观察客户端现象。
+如下图所示，手动起三个 pod 后端，Service 使用 selector ”app=lbdemo“ 连接到这三个 pod。
+
+![demolb-info](images/demolb-info.png)
+
+客户端的流量转发到了 172.13.0.7 这个 pod，此时我们强制删除该 pod，现象和上述直接删除 deployment 中的 pod 现象一致，等待一段时间终端才提示删除 pod 完成，然后客户端提示连接断开。
+
+![connection-of-demolb-broken](images/connection-of-demolb-broken.png)
 
 ### TODO: 使用 ingress 配合 service 做 grpc 的负载均衡
 
@@ -198,7 +204,15 @@ k8s 支持使用 ingress 对 http 请求的各个层做定制化的负载均衡�
 
 ### TODO：其他相关的方案
 
-1, [grpc load balancing use k8s service](https://kubernetes.io/blog/2018/11/07/grpc-load-balancing-on-kubernetes-without-tears/)
+1, [grpc load balancing use k8s service and linkerd](https://kubernetes.io/blog/2018/11/07/grpc-load-balancing-on-kubernetes-without-tears/)
+
+### 来自同一台机器的多个客户端请求是否被转发到同一个后端？
+
+先说结论：不会！为什么会有此一问？grpc 协议基于 http2，http2 是单个 tcp 长连接，所有请求都在该 tcp 连接上进行多路复用，这也解释了说为什么在上面的例子里面，同一个客户端发出的流量都被转发到了同一个后端。把该现象稍微延伸一下，多个客户端的连接请求是否会复用同一个 tcp 连接，同一个程序内的不同进程发起的客户端连接是否会共用同一个 tcp 连接，同一个进程内的不同线程发起的客户端连接是否会共用同一个 tcp 连接？本文只做了第一个验证，结论是不会。
+
+![check-if-multiple-use](images/check-if-multiple-use.png)
+
+如图，四个终端起了四个客户端，四个客户端的流量分别被转发到了 172.13.0.12，172.13.0.11，172.13.0.13，172.13.0.12。
 
 ## TODO：借助 etcd 在 client 端做负载均衡
 
@@ -212,4 +226,10 @@ k8s 支持使用 ingress 对 http 请求的各个层做定制化的负载均衡�
 
 原理和 client 端做负载均衡类似，client 端的请求首先发到 server，由 server 对该请求做负载均衡，路由到不同的节点。该方案的优点是适合在 k8s 上部署，因为此时 server 以及 服务节点在一个集群上，互相可以访问对方的虚拟 ip，还有一个好处是该方案不需要每一个客户端都实现负载均衡策略。当然，该方案下 server
 容易形成单点瓶颈，而且中间也有一次转发的开销，对负载较重的场景不太友好（比如用户频繁插入，频繁发出结果集较大的请求）。
+
+## 其他成熟的解决方案
+
+- 1, istio
+- 2, consul
+- 3, linkerd
 

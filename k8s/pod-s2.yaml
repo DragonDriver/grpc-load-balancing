@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demo-s2
+  labels:
+    app: lbdemo
+spec:
+    containers:
+    - name: demo-s2
+      image: grpc-lb-demo-server:latest
+      imagePullPolicy: Never
+      ports:
+      - containerPort: 50051
+      command: [ "python3", "server.py" ]

@@ -9,7 +9,7 @@ import helloworld_pb2_grpc
 
 
 def run():
-    with grpc.insecure_channel('127.0.0.1:51920') as channel:
+    with grpc.insecure_channel('127.0.0.1:56407') as channel:
         stub = helloworld_pb2_grpc.GreeterStub(channel)
         num = 50
         for _ in range(num):
