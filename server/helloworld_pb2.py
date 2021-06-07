@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x10helloworld.proto\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x02 \x01(\t23\n\x07Greeter\x12(\n\x08SayHello\x12\r.HelloRequest\x1a\x0b.HelloReply\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x10helloworld.proto\"\x1c\n\x0cHelloRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"\x1d\n\nHelloReply\x12\x0f\n\x07message\x18\x01 \x01(\t\"\"\n\x13HighOverheadRequest\x12\x0b\n\x03req\x18\x01 \x03(\x02\"#\n\x14HighOverheadResponse\x12\x0b\n\x03res\x18\x01 \x03(\x02\x32p\n\x07Greeter\x12(\n\x08SayHello\x12\r.HelloRequest\x1a\x0b.HelloReply\"\x00\x12;\n\nSayGoodBye\x12\x14.HighOverheadRequest\x1a\x15.HighOverheadResponse\"\x00\x62\x06proto3')
 )
 
 
@@ -66,7 +66,7 @@ _HELLOREPLY = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='message', full_name='HelloReply.message', index=0,
-      number=2, type=9, cpp_type=9, label=1,
+      number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -87,8 +87,72 @@ _HELLOREPLY = _descriptor.Descriptor(
   serialized_end=79,
 )
 
+
+_HIGHOVERHEADREQUEST = _descriptor.Descriptor(
+  name='HighOverheadRequest',
+  full_name='HighOverheadRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='req', full_name='HighOverheadRequest.req', index=0,
+      number=1, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=81,
+  serialized_end=115,
+)
+
+
+_HIGHOVERHEADRESPONSE = _descriptor.Descriptor(
+  name='HighOverheadResponse',
+  full_name='HighOverheadResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='res', full_name='HighOverheadResponse.res', index=0,
+      number=1, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=117,
+  serialized_end=152,
+)
+
 DESCRIPTOR.message_types_by_name['HelloRequest'] = _HELLOREQUEST
 DESCRIPTOR.message_types_by_name['HelloReply'] = _HELLOREPLY
+DESCRIPTOR.message_types_by_name['HighOverheadRequest'] = _HIGHOVERHEADREQUEST
+DESCRIPTOR.message_types_by_name['HighOverheadResponse'] = _HIGHOVERHEADRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 HelloRequest = _reflection.GeneratedProtocolMessageType('HelloRequest', (_message.Message,), {
@@ -105,6 +169,20 @@ HelloReply = _reflection.GeneratedProtocolMessageType('HelloReply', (_message.Me
   })
 _sym_db.RegisterMessage(HelloReply)
 
+HighOverheadRequest = _reflection.GeneratedProtocolMessageType('HighOverheadRequest', (_message.Message,), {
+  'DESCRIPTOR' : _HIGHOVERHEADREQUEST,
+  '__module__' : 'helloworld_pb2'
+  # @@protoc_insertion_point(class_scope:HighOverheadRequest)
+  })
+_sym_db.RegisterMessage(HighOverheadRequest)
+
+HighOverheadResponse = _reflection.GeneratedProtocolMessageType('HighOverheadResponse', (_message.Message,), {
+  'DESCRIPTOR' : _HIGHOVERHEADRESPONSE,
+  '__module__' : 'helloworld_pb2'
+  # @@protoc_insertion_point(class_scope:HighOverheadResponse)
+  })
+_sym_db.RegisterMessage(HighOverheadResponse)
+
 
 
 _GREETER = _descriptor.ServiceDescriptor(
@@ -113,8 +191,8 @@ _GREETER = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=81,
-  serialized_end=132,
+  serialized_start=154,
+  serialized_end=266,
   methods=[
   _descriptor.MethodDescriptor(
     name='SayHello',
@@ -123,6 +201,15 @@ _GREETER = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_HELLOREQUEST,
     output_type=_HELLOREPLY,
+    serialized_options=None,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SayGoodBye',
+    full_name='Greeter.SayGoodBye',
+    index=1,
+    containing_service=None,
+    input_type=_HIGHOVERHEADREQUEST,
+    output_type=_HIGHOVERHEADRESPONSE,
     serialized_options=None,
   ),
 ])

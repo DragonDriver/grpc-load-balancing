@@ -19,6 +19,11 @@ class GreeterStub(object):
         request_serializer=helloworld__pb2.HelloRequest.SerializeToString,
         response_deserializer=helloworld__pb2.HelloReply.FromString,
         )
+    self.SayGoodBye = channel.unary_unary(
+        '/Greeter/SayGoodBye',
+        request_serializer=helloworld__pb2.HighOverheadRequest.SerializeToString,
+        response_deserializer=helloworld__pb2.HighOverheadResponse.FromString,
+        )
 
 
 class GreeterServicer(object):
@@ -32,6 +37,13 @@ class GreeterServicer(object):
     context.set_details('Method not implemented!')
     raise NotImplementedError('Method not implemented!')
 
+  def SayGoodBye(self, request, context):
+    # missing associated documentation comment in .proto file
+    pass
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details('Method not implemented!')
+    raise NotImplementedError('Method not implemented!')
+
 
 def add_GreeterServicer_to_server(servicer, server):
   rpc_method_handlers = {
@@ -39,6 +51,11 @@ def add_GreeterServicer_to_server(servicer, server):
           servicer.SayHello,
           request_deserializer=helloworld__pb2.HelloRequest.FromString,
           response_serializer=helloworld__pb2.HelloReply.SerializeToString,
+      ),
+      'SayGoodBye': grpc.unary_unary_rpc_method_handler(
+          servicer.SayGoodBye,
+          request_deserializer=helloworld__pb2.HighOverheadRequest.FromString,
+          response_serializer=helloworld__pb2.HighOverheadResponse.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(

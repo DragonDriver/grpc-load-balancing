@@ -26,11 +26,21 @@ PORT = get_port()
 class Greeter(helloworld_pb2_grpc.GreeterServicer):
 
     def SayHello(self, request, context):
-        print(f"name: {request.name}")
         return helloworld_pb2.HelloReply(message=f"Hello, {request.name}!, I am {LOCAL_IP}:{PORT}")
 
+    def SayGoodBye(self, request, context):
+        return helloworld_pb2.HighOverheadResponse(res=request.req)
+
+MAX_MESSAGE_LENGTH = int(os.getenv("MAX_MESSAGE_LENGTH", 1024 * 1024 * 1024))
+
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    server = grpc.server(
+                futures.ThreadPoolExecutor(max_workers=10),
+                options=[
+                    ('grpc.max_send_message_length', MAX_MESSAGE_LENGTH),
+                    ('grpc.max_receive_message_length', MAX_MESSAGE_LENGTH),
+                ],
+            )
     helloworld_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
     server.add_insecure_port(f'[::]:{PORT}')
     server.start()

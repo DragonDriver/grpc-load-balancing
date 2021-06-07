@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-deployment
+  namespace: istio
+  labels:
+    app: demo
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: demo
+  template:
+    metadata:
+      labels:
+        app: demo
+    spec:
+      containers:
+      - name: demo
+        image: grpc-lb-demo-server:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 50051
+          name: grpc-50051
+        command: [ "python3", "server.py" ]
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: istio
+  name: demo
+spec:
+  type: ClusterIP
+  selector:
+    app: demo
+  ports:
+    - name: grpc-50051
+      port: 50051
+      targetPort: 50051
+      protocol: TCP
+

@@ -5,9 +5,18 @@ message HelloRequest {
 }
 
 message HelloReply {
-    string message = 2;
+    string message = 1;
 }
+
+message HighOverheadRequest {
+    repeated float req = 1;
+};
+
+message HighOverheadResponse {
+    repeated float res = 1;
+};
 
 service Greeter {
     rpc SayHello(HelloRequest) returns (HelloReply) {}
+    rpc SayGoodBye(HighOverheadRequest) returns (HighOverheadResponse) {}
 }

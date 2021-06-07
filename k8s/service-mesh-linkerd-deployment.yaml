@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-mesh-linkerd
+  labels:
+    app: service-mesh-linkerd
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: service-mesh-linkerd
+  template:
+    metadata:
+      labels:
+        app: service-mesh-linkerd
+    spec:
+      containers:
+      - name: demo
+        image: grpc-lb-demo-server:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 50051
+        command: [ "python3", "server.py" ]
+
