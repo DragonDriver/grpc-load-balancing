@@ -14,6 +14,9 @@ endpoint = '127.0.0.1:58243'
 endpoint = '192.168.99.101:31323'
 endpoint = '192.168.99.101:443'
 endpoint = 'greeter.demo.com:443'
+endpoint = 'greeter.demo.com:50051'
+
+print(f"endpoint: {endpoint}")
 
 MAX_MESSAGE_LENGTH = int(os.getenv("MAX_MESSAGE_LENGTH", 1024 * 1024 * 1024))
 
@@ -28,7 +31,7 @@ with open('../k8s/tls.crt', 'rb') as f:
 credentials = grpc.ssl_channel_credentials(root_certificates=trusted_certs)
 
 def run():
-    num = 10
+    num = 3
     length = 512 * 1
     #print(f"test num: {num}")
     #print(f"length of workload: {length}")
@@ -36,7 +39,8 @@ def run():
 
     #print(f"[{datetime.datetime.now()}] low overhead request begin")
     begin = time.time()
-    with grpc.secure_channel(endpoint, credentials, options=options) as channel:
+    # with grpc.secure_channel(endpoint, credentials, options=options) as channel:
+    with grpc.insecure_channel(endpoint) as channel:
         stub = helloworld_pb2_grpc.GreeterStub(channel)
         for _ in range(num):
             response = stub.SayHello(helloworld_pb2.HelloRequest(name='you'))

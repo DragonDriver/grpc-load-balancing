@@ -8,10 +8,6 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
     nginx.ingress.kubernetes.io/proxy-body-size: "4g"
 spec:
-  #tls:
-  #   - secretName: grpc-lb-demo-tls
-  #     #hosts:
-  #     #  - greeter.demo.com
   rules:
     - host: greeter.demo.com
     - http:
@@ -23,3 +19,7 @@ spec:
                 name: demo
                 port:
                   number: 50051
+                  #tls:
+                  #   - secretName: grpc-lb-demo-tls
+                  #     #hosts:
+                  #     #  - greeter.demo.com
